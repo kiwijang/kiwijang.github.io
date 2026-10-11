@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const theme = document.querySelector('#theme');
   try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch {}
   theme?.addEventListener('click', () => {
@@ -8,13 +8,28 @@
   });
   let filter = 'all';
   const search = document.querySelector('#search');
+  const yearGroups = [...document.querySelectorAll('.year-group')];
+  let savedYearState = null;
   const update = () => {
+    const filtering = filter !== 'all' || Boolean(search?.value.trim());
+    if (filtering && savedYearState === null) {
+      savedYearState = new Map(yearGroups.map(group => [group, group.open]));
+    }
     let visible = 0;
     document.querySelectorAll('.card').forEach(card => {
       const match = (filter === 'all' || card.dataset.tags.split('|').includes(filter)) && card.dataset.search.includes((search?.value || '').trim().toLowerCase());
       card.hidden = !match;
       if (match) visible++;
     });
+    document.querySelectorAll('.year-group').forEach(group => {
+      const count = group.querySelectorAll('.card:not([hidden])').length;
+      group.hidden = count === 0;
+      if (filtering && count > 0) group.open = true;
+      else if (!filtering && savedYearState !== null) group.open = savedYearState.get(group);
+      const label = group.querySelector('[data-year-count]');
+      if (label) label.textContent = String(count);
+    });
+    if (!filtering) savedYearState = null;
     const empty = document.querySelector('#empty');
     if (empty) empty.hidden = visible !== 0;
   };
@@ -64,4 +79,41 @@
   window.addEventListener('load', schedule);
   document.querySelectorAll('.prose img').forEach(img => img.addEventListener('load', schedule));
   update();
+})();
+
+/* Shared article markup keeps filters and year disclosures in sync in both views. */
+(() => {
+  const panel = document.querySelector('#post-views');
+  const tabs = [...document.querySelectorAll('.view-tabs [role="tab"]')];
+  if (!panel || !tabs.length) return;
+  function select(view, save = true) {
+    const selected = tabs.find(tab => tab.dataset.view === view) || tabs[0];
+    panel.dataset.view = selected.dataset.view;
+    panel.setAttribute('aria-labelledby', selected.id);
+    tabs.forEach(tab => {
+      const active = tab === selected;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+    });
+    if (save) {
+      try { localStorage.setItem('post-view', selected.dataset.view); } catch {}
+    }
+  }
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => select(tab.dataset.view));
+    tab.addEventListener('keydown', event => {
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = tabs.length - 1;
+      if (next === undefined) return;
+      event.preventDefault();
+      select(tabs[next].dataset.view);
+      tabs[next].focus();
+    });
+  });
+  let saved;
+  try { saved = localStorage.getItem('post-view'); } catch {}
+  select(saved || 'cards', false);
 })();

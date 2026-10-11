@@ -1,2 +1,5 @@
 ﻿node_modules/
 dist/
+
+# Local import report contains workstation paths
+content/import-report.json
