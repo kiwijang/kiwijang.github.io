@@ -5,6 +5,7 @@ desc: ''
 updated: 1647711602708
 created: 1641561592013
 tags: CSS
+description: "釐清 CSS、PostCSS 與 Sass 的用途，整理樣式處理工具與網頁外觀呈現的基礎觀念。"
 ---
 
 ## 1. 前言

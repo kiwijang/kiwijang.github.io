@@ -6,6 +6,7 @@ updated: 1662620120470
 created: 1640615759253
 tags:
   - Nx
+description: "介紹 Monorepo 架構與 Nx 工作區，透過 Nx Console 建立多專案、共用函式庫與集中套件管理的開發環境。"
 ---
 
 ## 前言

@@ -6,6 +6,7 @@ updated: 1662567583552
 created: 1662559527764
 tags:
   - C#
+description: "整理 C# List、IEnumerable 與 IQueryable 的差異，討論列舉、延遲執行、ToList 與 LINQ 查詢。"
 ---
 
 ## IEnumerable vs List - 如何使用? 他們是如何運作的?

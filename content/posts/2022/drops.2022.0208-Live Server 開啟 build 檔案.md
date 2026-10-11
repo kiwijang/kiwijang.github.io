@@ -7,6 +7,7 @@ created: 1644317231901
 tags:
   - Angular
   - Server
+description: "記錄使用 VS Code Live Server 預覽 Angular 建置檔案時，遇到的 base 路徑、CORS 與路由 404 問題。"
 ---
 
 ## 1. 直接資料夾開啟 index.html，會遇到一些問題:

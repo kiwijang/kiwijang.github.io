@@ -7,6 +7,7 @@ created: 1663169293429
 tags:
   - OS
 status: w
+description: "整理 I/O 輪詢與中斷、硬體資源保護、作業系統架構及虛擬機的學習筆記。"
 ---
 
 ## IO 運作方式: Interrupt 介紹、HW Resource protection

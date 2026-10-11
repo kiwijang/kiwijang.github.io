@@ -6,6 +6,7 @@ updated: 1673695827983
 created: 1662562033027
 tags:
   - OS
+description: "記錄在 Windows 透過 WSL2、QEMU 與 OSX-KVM 使用 macOS 虛擬機，測試 Safari、Xcode 與 iOS 模擬器的環境設定。"
 ---
 
 ## 1. 簡述過程

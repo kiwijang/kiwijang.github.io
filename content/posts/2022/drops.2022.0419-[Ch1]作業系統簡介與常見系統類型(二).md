@@ -6,6 +6,7 @@ updated: 1663165644718
 created: 1650381132068
 tags:
   - OS
+description: "整理作業系統的基礎概念與常見系統類型，作為作業系統學習的入門筆記。"
 ---
 
 ## 電腦系統概論 computer system structure

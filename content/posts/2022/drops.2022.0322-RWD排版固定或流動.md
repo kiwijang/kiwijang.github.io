@@ -6,6 +6,7 @@ updated: 1649072749829
 created: 1647931558726
 tags:
   - CSS
+description: "整理 RWD 固定與流動排版的差異，討論斷點、容器寬度與不同螢幕尺寸的版面配置。"
 ---
 
 因為設計稿給了三種尺寸 pc/pad/phone，

@@ -6,6 +6,7 @@ updated: 1663606956437
 created: 1663604952261
 tags:
   - Angular
+description: "整理 Angular 元件溝通與 RxJS Subject 的觀念，記錄 EventEmitter、BehaviorSubject、Observable 與 Observer 的關係。"
 ---
 <!-- 
 date: 2020-05-16 09:34:52

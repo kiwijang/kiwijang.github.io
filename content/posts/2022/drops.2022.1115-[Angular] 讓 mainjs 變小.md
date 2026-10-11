@@ -6,6 +6,7 @@ updated: 1675332833044
 created: 1668496095203
 tags:
   - Angular
+description: "記錄 Angular main.js 的體積優化思路，使用 lazy loading、tree shaking 與套件分析工具檢查建置內容。"
 ---
 
 ## 讓 main.js 變小

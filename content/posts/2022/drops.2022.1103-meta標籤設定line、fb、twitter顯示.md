@@ -6,6 +6,7 @@ updated: 1668708420081
 created: 1667447309598
 tags:
   - HTML
+description: "整理 Open Graph 與社群連結預覽的 Meta 標籤設定，記錄 Facebook、Twitter 和 LINE 的顯示與預覽資源。"
 ---
 
 ## HTML 的 Meta 標籤

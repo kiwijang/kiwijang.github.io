@@ -6,6 +6,7 @@ updated: 1647931393974
 created: 1647774542471
 tags:
  - JavaScript
+description: "以範例整理 JavaScript 遞增與遞減運算子，說明前置與後置運算的執行順序和賦值差異。"
 ---
 
 ## 遞增運算子(++)與遞減運算子(--)

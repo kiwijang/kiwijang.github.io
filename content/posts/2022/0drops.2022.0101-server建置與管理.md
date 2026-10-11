@@ -6,6 +6,7 @@ updated: 1669082046753
 created: 1641043042173
 tags: Server
 status: w
+description: "整理《MIS 一定要懂的伺服器建置與管理知識》的章節重點，涵蓋網路基礎、伺服器服務、虛擬化與管理觀念。"
 ---
 
 

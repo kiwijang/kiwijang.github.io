@@ -7,4 +7,5 @@ created: 1663605777459
 tags:
   - Angular
 status: w
+description: "Angular Change Detection 與 ngZone 主題的待補筆記，目前尚無內文。"
 ---

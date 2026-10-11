@@ -1,3 +1,6 @@
+---
+description: "沿途筆記靜態部落格的使用說明，涵蓋 Markdown 文章、年份分類、Sharp 圖片轉檔、語法上色與 GitHub Pages 部署。"
+---
 # 沿途筆記
 
 使用 HTML、CSS、JavaScript 的 GitHub Pages 靜態部落格。Markdown 建置為獨立 HTML，不需要後端。

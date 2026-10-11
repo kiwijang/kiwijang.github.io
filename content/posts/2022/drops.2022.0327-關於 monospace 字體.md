@@ -7,6 +7,7 @@ created: 1648393503809
 tags:
  - CSS
  - Android
+description: "整理 monospace 等寬字體的特性與使用情境，記錄網頁字體呈現的觀察。"
 ---
 
 ## 一致化 vscode 和網站的 font-family

@@ -7,6 +7,7 @@ created: 1670674322860
 tags:
   - Flutter
   - Android
+description: "整理在 Windows 使用 VS Code 開發 Flutter Android App 的環境設定，以及 Dart、Flutter 引擎與編譯方式。"
 ---
 
 ## Flutter
