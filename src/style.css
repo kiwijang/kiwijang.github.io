@@ -208,3 +208,17 @@ nav button{display:inline-flex;align-items:center;justify-content:center;padding
   .year-groups[data-view=list] .card-bottom>span:first-child{display:none}
 }
 @media(prefers-reduced-motion:reduce){.view-tabs button{transition:none}}
+
+/* Tag filters stay collapsed until requested. */
+.filter-disclosure{margin:0 0 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.filter-disclosure>summary{display:flex;align-items:center;gap:9px;list-style:none;cursor:pointer;padding:10px 14px;font-size:13px;line-height:20px;font-weight:600;transition:color .2s ease}
+.filter-disclosure>summary::-webkit-details-marker{display:none}
+.filter-disclosure>summary::marker{content:""}
+.filter-disclosure>summary::before{content:"";flex:0 0 20px;height:20px;background:linear-gradient(var(--accent),var(--accent)),linear-gradient(var(--accent),var(--accent));background-size:12px 2px,2px 12px;background-position:center;background-repeat:no-repeat}
+.filter-disclosure[open]>summary::before{background-size:12px 2px,2px 0}
+.filter-disclosure>summary:hover{color:var(--accent)}
+.filter-disclosure .filters{margin:0;padding:4px 14px 14px}
+@media(prefers-reduced-motion:reduce){.filter-disclosure>summary{transition:none}}
+
+/* Align article view controls to the right. */
+.view-tabs{display:flex;width:max-content;max-width:100%;margin-left:auto}
