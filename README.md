@@ -96,3 +96,17 @@ Markdown 程式碼區塊的三個反引號後填入語言，例如 c、cpp、js�
 未指定語言會在常用語言範圍內自動辨識；未知語言以純文字顯示。
 可用 text 或 plaintext 明確指定純文字。
 配色位於 src/style.css 的 Highlight.js 區段。
+
+### 首頁照片與最低解析度
+
+image.config.json 的 overrides 可針對特定來源檔設定尺寸與品質。
+目前 landscape.jpg 使用 maxWidth: 1200、quality: 85、lossless: false。
+其他圖片維持最大寬度 400px 與無損 WebP；來源原圖保留。
+所有轉檔圖片寫入至少 350 PPI，來源 density 較高時保留較高值。
+PPI 是解析度中繼資料，不代表網頁顯示清晰度；照片使用適當像素尺寸與壓縮品質平衡容量。
+### 較大文章圖片自動處理
+
+largeImages 規則：校正方向後寬度至少 1200px，或原檔至少 1 MiB 時，採用最大寬度 1200px、品質 85。
+JPEG 使用有損 WebP；PNG 等其他來源沿用預設無損設定，避免文字截圖產生壓縮痕跡。
+這是依尺寸、容量與格式分類，不會自動辨識照片或文字內容；若需指定個別圖片，使用 overrides。
+其他較小圖片仍使用預設最大寬度 400px。所有圖片不放大，並保留至少 350 PPI。

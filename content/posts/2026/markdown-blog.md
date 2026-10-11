@@ -28,10 +28,10 @@ tags: [日常]
 把圖片放在 `content/images/`，文章中使用相對路徑：
 
 ```markdown
-![山與日出的插畫](../../images/landscape.svg)
+![恐龍](../../images/landscape.jpg)
 ```
 
-![山與日出的插畫](../../images/landscape.svg)
+![恐龍](../../images/landscape.jpg)
 
 建置時，圖片會複製到網站的 `images/` 資料夾。相對連結能在 GitHub Pages 的專案子路徑下正常顯示。
 

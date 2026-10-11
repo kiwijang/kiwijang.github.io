@@ -3,5 +3,18 @@
   "quality": 80,
   "ppi": 350,
   "lossless": true,
-  "maxWidth": 400
+  "maxWidth": 400,
+  "overrides": {
+    "landscape.jpg": {
+      "maxWidth": 1200,
+      "quality": 85,
+      "lossless": false
+    }
+  },
+  "largeImages": {
+    "minWidth": 1200,
+    "minBytes": 1048576,
+    "maxWidth": 1200,
+    "quality": 85
+  }
 }
