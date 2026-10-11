@@ -7,6 +7,9 @@ const escape = text => String(text).replace(/[&<>"']/g, c => ({
 export function addCodeHighlighting(renderer) {
   renderer.code = function({ text, lang }) {
     const language = (lang || '').trim().split(/\s+/)[0].toLowerCase();
+    if (language === 'mermaid' || (!language && /^\s*(?:flowchart|graph)\s+(?:TD|TB|BT|LR|RL)\b/.test(text))) {
+      return `<div class="diagram"><pre class="mermaid">${escape(text)}</pre></div>\n`;
+    }
     let html, detected;
     if (language && hljs.getLanguage(language)) {
       html = hljs.highlight(text, { language, ignoreIllegals: true }).value;

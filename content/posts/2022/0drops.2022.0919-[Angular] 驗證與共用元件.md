@@ -6,7 +6,6 @@ updated: 1663607028791
 created: 1663605967730
 tags:
   - Angular
-status: w
 description: "比較 Angular 新增與編輯表單的共用元件設計，整理 Reactive Forms、欄位驗證與 API 職責的拆分思路。"
 ---
 

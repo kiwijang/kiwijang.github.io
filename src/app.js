@@ -117,3 +117,64 @@
   try { saved = localStorage.getItem('post-view'); } catch {}
   select(saved || 'cards', false);
 })();
+
+/* Load the locally hosted renderer only on pages containing diagrams. */
+(async () => {
+  const nodes = [...document.querySelectorAll('.prose pre.mermaid')];
+  if (!nodes.length) return;
+  const sources = nodes.map(node => node.textContent);
+  const appScript = document.querySelector('script[src$="app.js"]');
+  try {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = new URL('vendor/mermaid.min.js', appScript.src).href;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.append(script);
+    });
+    await document.fonts.ready;
+    let requested = 0;
+    let running = false;
+    async function render() {
+      requested++;
+      if (running) return;
+      running = true;
+      try {
+        let rendered;
+        do {
+          rendered = requested;
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default',
+            fontFamily: 'Segoe UI, Microsoft JhengHei, sans-serif',
+            flowchart: { useMaxWidth: true, htmlLabels: false },
+          });
+          for (const [index, node] of nodes.entries()) {
+            try {
+              const { svg, bindFunctions } = await mermaid.render(`article-diagram-${index}`, sources[index]);
+              node.innerHTML = svg;
+              node.classList.add('rendered');
+              node.removeAttribute('data-error');
+              bindFunctions?.(node);
+            } catch (error) {
+              node.textContent = sources[index];
+              node.classList.remove('rendered');
+              node.dataset.error = 'true';
+              document.getElementById(`darticle-diagram-${index}`)?.remove();
+              console.warn('Unable to render Mermaid diagram', error);
+            }
+          }
+          window.dispatchEvent(new Event('resize'));
+        } while (rendered !== requested);
+      } finally { running = false; }
+    }
+    new MutationObserver(render).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['data-theme'],
+    });
+    await render();
+  } catch (error) {
+    // Keep the original escaped source readable if the renderer cannot load.
+    console.warn('Unable to load Mermaid', error);
+  }
+})();

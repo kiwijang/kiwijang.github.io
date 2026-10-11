@@ -21,6 +21,8 @@ ${body}<footer><span>沿途筆記 / 記錄每一個值得留下的瞬間</span><
 await fs.mkdir(out, { recursive: true });
 await fs.mkdir(path.join(out, 'posts'), { recursive: true });
 const images = await buildImages(root, out);
+await fs.mkdir(path.join(out, 'vendor'), { recursive: true });
+await fs.copyFile(path.join(root, 'node_modules/mermaid/dist/mermaid.min.js'), path.join(out, 'vendor/mermaid.min.js'));
 for (const name of ['style.css', 'app.js']) await fs.copyFile(path.join(root,'src',name),path.join(out,name));
 const posts = [];
 const sourceDir = path.join(root, 'content/posts');
