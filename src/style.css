@@ -231,6 +231,14 @@ nav button{display:inline-flex;align-items:center;justify-content:center;padding
 /* Responsive diagrams with horizontal scrolling for wide charts. */
 .prose .diagram{max-width:100%;min-width:0;margin:.75rem 0;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
 .prose .diagram pre.mermaid{margin:0;background:transparent;color:var(--fg);padding:16px;white-space:pre;line-height:1.6}
-.prose .diagram pre.mermaid.rendered{display:flex;justify-content:center;white-space:normal}
-.prose .diagram svg{display:block;max-width:100%;height:auto;flex-shrink:0}
+.prose .diagram pre.mermaid.rendered{display:block;width:max-content;min-width:100%;white-space:normal}
+.prose .diagram svg{display:block;max-width:none;height:auto;margin-inline:auto;overflow:visible}
 .prose .diagram pre[data-error]{border-left:3px solid var(--accent)}
+
+/* Configured topics share article layouts and disclosure alignment. */
+.topic-section{padding:14px 18px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.topic-groups{display:flex;flex-direction:column;gap:16px;min-width:0}
+.topic-group .year-title{font-size:20px}
+.topic-empty{margin:8px 0;color:var(--muted);font-size:13px}
+@media(max-width:560px){.topic-section{padding:10px 12px}.topic-group .year-title{font-size:18px}}
+.topic-children{display:flex;flex-direction:column;gap:12px;margin:0 0 16px 10px;padding-left:14px;border-left:2px solid var(--line)}.topic-children .year-title{font-size:18px}.topic-group>.cards{margin-top:12px}@media(max-width:560px){.topic-children{margin-left:3px;padding-left:10px}}

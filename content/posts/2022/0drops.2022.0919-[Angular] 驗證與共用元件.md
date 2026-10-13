@@ -1,6 +1,6 @@
 ---
 id: 7vo9q7rwhx3xyyg8auxb22s
-title: '0919-[Angular] 驗證與共用元件'
+title: '0919 [Angular] 驗證與共用元件'
 desc: ''
 updated: 1663607028791
 created: 1663605967730

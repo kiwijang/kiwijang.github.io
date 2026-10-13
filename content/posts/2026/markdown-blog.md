@@ -2,7 +2,7 @@
 title: 用 Markdown，開始寫自己的部落格
 date: "2026-10-11"
 description: 從一個文字檔開始，把想法整理成文章，讓寫作回到最單純的樣子。
-tags: [技術, 寫作]
+tags: [技術,Startup]
 ---
 寫文章不需要複雜的工具。這個部落格將 Markdown 轉成完整的 HTML，每篇文章都有獨立的網址。
 

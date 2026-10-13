@@ -8,7 +8,7 @@
   });
   let filter = 'all';
   const search = document.querySelector('#search');
-  const yearGroups = [...document.querySelectorAll('.year-group')];
+  const yearGroups = [...document.querySelectorAll('[data-article-group]')];
   let savedYearState = null;
   const update = () => {
     const filtering = filter !== 'all' || Boolean(search?.value.trim());
@@ -21,14 +21,16 @@
       card.hidden = !match;
       if (match) visible++;
     });
-    document.querySelectorAll('.year-group').forEach(group => {
-      const count = group.querySelectorAll('.card:not([hidden])').length;
-      group.hidden = count === 0;
+    document.querySelectorAll('[data-article-group]').forEach(group => {
+      const count = new Set([...group.querySelectorAll('.card:not([hidden])')].map(card => card.getAttribute('href'))).size;
+      group.hidden = count === 0 && (filtering || !group.matches(".topic-group"));
       if (filtering && count > 0) group.open = true;
       else if (!filtering && savedYearState !== null) group.open = savedYearState.get(group);
-      const label = group.querySelector('[data-year-count]');
+      const label = group.querySelector(':scope > summary [data-year-count]');
       if (label) label.textContent = String(count);
     });
+    const topicSection = document.querySelector('.topic-section');
+    if (topicSection) topicSection.hidden = filtering && !topicSection.querySelector('.topic-group:not([hidden])');
     if (!filtering) savedYearState = null;
     const empty = document.querySelector('#empty');
     if (empty) empty.hidden = visible !== 0;
@@ -148,12 +150,18 @@
             securityLevel: 'strict',
             theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default',
             fontFamily: 'Segoe UI, Microsoft JhengHei, sans-serif',
-            flowchart: { useMaxWidth: true, htmlLabels: false },
+            flowchart: { useMaxWidth: false, htmlLabels: false },
           });
           for (const [index, node] of nodes.entries()) {
             try {
               const { svg, bindFunctions } = await mermaid.render(`article-diagram-${index}`, sources[index]);
               node.innerHTML = svg;
+              const diagram = node.querySelector('svg');
+              const width = diagram?.viewBox.baseVal.width;
+              if (width) {
+                diagram.style.width = width + 'px';
+                diagram.style.maxWidth = 'none';
+              }
               node.classList.add('rendered');
               node.removeAttribute('data-error');
               bindFunctions?.(node);

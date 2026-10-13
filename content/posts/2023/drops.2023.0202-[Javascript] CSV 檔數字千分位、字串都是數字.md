@@ -5,6 +5,7 @@ desc: ''
 updated: 1675332833043
 created: 1675303666200
 description: "記錄以 JavaScript 產生 CSV 時的數字千分位、貨幣與純數字字串處理，避免 Excel 改變代號格式。"
+tags: ["JavaScript"]
 ---
 
 ## CSV 檔數字千分位、字串都是數字

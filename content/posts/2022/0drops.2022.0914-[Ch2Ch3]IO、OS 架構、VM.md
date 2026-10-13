@@ -7,11 +7,26 @@ created: 1663169293429
 tags:
   - OS
 status: supplemented
-description: "大碩資工研究所作業系統課程重點筆記，補充 polling、interrupt、DMA、硬體資源保護、OS 架構與虛擬機，附流程圖及易混淆觀念比較。"
+description: "依 Operating System Concepts（恐龍本）整理 I/O、interrupt、DMA、硬體資源保護、OS 架構與虛擬機，附章節對照、流程圖與觀念比較。"
 ---
 
 
-> 本文原始內容是觀看大碩資工研究所作業系統課程時的重點筆記。2026-10-11 依公開教材補充未完成章節並校正部分觀念；補充內容不代表課程逐字稿，考試名詞仍應對照授課講義。
+本文是依 **《Operating System Concepts》（恐龍本）** 章節整理的學習筆記。2026-10-12 校正來源標示與易混淆觀念；文中其他教材及平台文件用作補充參考。
+
+## 章節對照
+
+原標題「Ch2Ch3」保留筆記當時的編排，不作為恐龍本第 10 版的章號。系列目錄列有第 10 版，以下依[作者官方章節目錄](https://www.os-book.com/OS10/slide-dir/index.html)提供對照；不同版本的章號可能不同。
+
+| 本文主題 | 第 10 版對應章節 |
+| --- | --- |
+| Interrupt、DMA、dual-mode、timer | Ch1 Introduction |
+| OS 服務、system call 與 OS 架構 | Ch2 Operating-System Services |
+| 程序狀態與 context switch | Ch3 Processes |
+| 記憶體保護與位址轉譯 | Ch9 Main Memory；虛擬記憶體延伸見 Ch10 Virtual Memory |
+| Polling、interrupt-driven I/O、DMA | Ch12 I/O Systems |
+| Virtual Machine 與 hypervisor | Ch18 Virtual Machines |
+
+本文依 I/O、中斷與保護、OS 架構、虛擬機的順序整理。CPU 五階段流水線、Linux DMA API 與容器比較是補充說明。
 
 ### 原始 I/O 筆記的觀念校正
 
@@ -19,7 +34,7 @@ description: "大碩資工研究所作業系統課程重點筆記，補充 polli
 - Blocking I/O 會讓請求程序等待，但 CPU 是否空轉，取決於誰在 polling、有沒有其他可執行程序，以及系統設計。不能把「CPU 忙等」和「CPU 同時執行其他程序」視為同一段操作。
 - **Interrupt 不一定造成 process context switch。** CPU 可以處理 ISR 後返回原程序；是否改跑別的程序由排程與搶占條件決定。
 - I/O 完成使等待程序由 **Blocked → Ready**；不保證立即 **Ready → Running**。
-- 原流程圖的 kernel／device 拼字與箭頭是課堂速記。後文新增圖表採較明確的資料流，區分裝置搬移、ISR 和程序排程。
+- 下文流程圖區分裝置搬移、ISR 和程序排程，不把中斷處理直接視為程序切換。
 
 以上校正依 [OSTEP：I/O Devices](https://pages.cs.wisc.edu/~remzi/OSTEP/file-devices.pdf) 的控制協定與中斷模型整理。
 
@@ -27,71 +42,71 @@ description: "大碩資工研究所作業系統課程重點筆記，補充 polli
 
 ### I/O 運作方式
 
-#### polling I/O (programmed I/O)
+#### Polling 與 programmed I/O
   
-Def: 又叫 Busy waiting I/O 或 programmed I/O
+Polling 是主動查詢裝置狀態；programmed I/O（PIO）是 CPU 執行指令搬移資料。兩者常搭配，但不完全同義。持續輪詢且不讓出 CPU 稱為 busy waiting；定期查詢則不一定持續忙等。
 
 步驟如下:
 
 1. 執行中的 Process，發出 I/O request 給 OS 希望 OS 提供某種 I/O 服務，eg Disk read a file。
-2. OS 收到請求後(可能)會先暫停(block)該 process 即此 process 會放 CPU 至於 waiting queue 等待 I/O completed。
-3. OS (or Kernel) 中的 I/O-subsystem 會處理此請求。eg 也會檢查 Disk cache 是否有命中，若有剛從 Disk cache 取出 file 資料 不用 read I/O。
+2. OS 檢查請求。Blocking I/O 表示呼叫者需等待結果；是否讓出 CPU，取決於 driver 的等待策略，不能由 blocking 直接推論。
+3. OS 的 I/O 子系統檢查快取；若命中，可直接取得資料而不必讀取裝置。
 4. I/O-subsystem 會 pass 此請求給 device driver(驅動程式)。
-   driver -( request I/O subsystem )-> OS
 5. device driver 會依此請求設定相關 I/O commands 到 device controller(硬體)。
 6. device controller  會指揮 I/O-device 執行 I/O 運作
-7. 此時 CPU 可能 idle，OS 可能會將 CPU 分派給其他 process 使用。
-   [怎麼知道設備到底完成了沒有?]
-8. CPU 會不斷地去 polling I/O-device controller 上之相關 registers 值，確定 I/O 運作完成與否或有無 error。
+7. CPU 執行 driver 的輪詢迴圈，讀取 controller 的狀態暫存器，確認裝置是否就緒、完成或出錯。
+8. 若採 PIO，CPU 在裝置就緒時搬移資料；輪詢與搬移可能重複多次，直到請求完成，再回傳結果。
  
-缺點: 本希望 CPU 專心 process，但 CPU 並未將全 time 用於此 process exec 上而是耗費大量時間去 polling IO-device controllers。
-所以 CPU utilization 不高，且 process throughput 偏低。
+持續輪詢會消耗 CPU 時間，同一顆 CPU 在執行輪詢迴圈時無法同時執行另一程序。CPU 可能很忙，卻沒有完成更多應用工作，因此不能直接說 CPU utilization 低。等待很短或事件頻繁時，polling 也可能比中斷更有效率。
 
 ```mermaid
 flowchart TD
     B[device driver 驅動程式] -->|設定相關 I/O-commands| C
     C[device controller 硬體] -->|指揮 I/O-device 執行 I/O 運作| D[I/O-device]
-    B ---->|interface| E[OS subsystem - I/O subsystem]
-    E ---->|register| B
+    E[OS I/O subsystem] -->|提出裝置請求| B
+    B -->|回報結果| E
 ```
 
 ```mermaid
 flowchart TD
-    A[CPU] -->|cpu idle 分派給其他程序使用| E[7 Process B 看電視]
-    A[CPU] --> B
-    B[Process A 看書 - 2 blocked] -->|1 發出 I/O 請求| C
-    C[3 kernal - I/O subsystem] -->|4 pass| D
-    D[device driver] -->|5 I/O 命令| F[6 I/O decvice 硬體 - 好了不會通知]
-    A ---->|8 polling - CPU 要一直檢查好了沒| F
+    A[程序提出 I/O 請求] --> C[OS I/O subsystem]
+    C --> D[Driver 設定 controller]
+    D --> E[CPU 查詢裝置狀態]
+    E --> F{資料可搬移嗎}
+    F -->|尚未就緒| E
+    F -->|就緒| G[CPU 以 PIO 搬移資料]
+    G --> H{請求完成嗎}
+    H -->|否| E
+    H -->|是| I[OS 回傳結果]
 ```
 
-#### Interrupted I/O
+#### Interrupt-driven I/O
 
-8. 當 I/O 運作完成，I/O-device controller 會發出一個 "I/O-completed" interrupt 通知 CPU(OS)
-9. OS 收到中斷通知後(可能)會先暫停目前執行中的 process(eg. PB execution -> ready state)
+8. Controller 發出中斷，通知 CPU 有事件需處理，例如資料就緒、傳輸完成或錯誤；不一定每次都表示整個請求完成。
+9. CPU 保存必要狀態並進入中斷處理；原程序不必因此從 Running 轉為 Ready。
 10. OS 會依 Interrupt ID(No) 查詢 Interrupt vector(表) 找出中斷對應的服務處理程式(ISR: interrupt service routine) 之位址。
-11. Jump to ISR 位址，ISR 執行(eg. 將 File Data 從 Controller 之 buffer registers 搬到 memory 中)
-12. ISR 完成，控制權交回 kernel I/O-subsystem 通知 process 其 I/O completed 以及告知結果。
+11. 執行 ISR，辨識並確認事件。若採 PIO，CPU 仍需搬移資料；若採 DMA，主要資料搬移由裝置或 DMA engine 完成。部分工作可能延後處理。
+12. 整個請求完成後，核心記錄結果並使等待程序由 Blocked 轉為 Ready，不保證立即執行。
 13. OS 恢復中斷之前 process 的執行(eg Process B exec) 或交由 cpu schedule 決定下一執行之 process。
 
 
 ```mermaid
 flowchart TD
-    A[CPU] -->|cpu idle 分派給其他程序使用| E[7 Process B 看電視 - executed]
-    A[CPU] --> B
-    B[Process A 看書 - 2 blocked] -->|1 發出 I/O 請求| C
-    C[3 kernal - I/O subsystem - ISR] -->|4 pass| D
-    D[device driver] -->|5 I/O 命令| F[6 I/O decvice 硬體]
-    F ---->|8 發出 I/O-completed intterupt 到 OS 以通知 CPU I/O 已完成| C
-    E ---->|9 I/O 完成| G[Process B - ready]
-    C -->|10 根據 Interrupt ID 查中斷向量表 11 找到對應 ISR 並執行| C
-    F -->|11 ISR 執行需 CPU 參與 譬如將 I/O-device buffer 搬到 memory 之中| F
-    B -->|12 OS 通知 I/O-completed| H[Process A - ready]
+    A[程序 A 提出請求] --> B[Driver 啟動裝置]
+    B --> C[A 等待並進入 Blocked]
+    C --> D[CPU 可執行其他 Ready 程序]
+    B --> E[裝置發出中斷]
+    E --> F[CPU 保存狀態並執行 handler]
+    F --> G{請求完成嗎}
+    G -->|否| H[處理事件後繼續等待]
+    G -->|是| I[A 轉為 Ready]
+    H --> J[返回原流程或評估排程]
+    I --> J
 ```
 
 優點: 
 
-CPU 無需花費時間用於 polling I/O device controller，而是可以全心用於 Process 之 execution 上。所以 CPU utilization 較高， throughput 相對地較高故 improve the system performance。
+中斷可省去持續 polling 的成本，讓 CPU 在等待裝置期間執行其他工作；效益仍取決於事件頻率、處理成本與負載，不能保證 throughput 一定較高。
 
 缺點: 
 
@@ -125,7 +140,7 @@ DMA address 不一定等於 CPU 使用的虛擬位址或實體位址；平台可
 
 ##### Machine instruction cycle：CPU 與 DMA 的記憶體競爭
 
-原課堂筆記用五階段模型觀察 CPU 哪些階段可能使用 memory／bus：
+以下用典型五階段模型補充觀察 CPU 哪些階段可能使用 memory／bus：
 
 | 階段 | 名稱 | 工作 | 是否可能存取記憶體 |
 | --- | --- | --- | --- |
@@ -144,7 +159,7 @@ DMA address 不一定等於 CPU 使用的虛擬位址或實體位址；平台可
 
 在傳統共享 bus 模型中，DMA 與 CPU 同時需要主記憶體或匯流排時，必須透過仲裁決定使用權。CPU 的 IF 或 MEM 若真的要走共享匯流排，就可能等待；若 cache 命中，則不一定產生相同的衝突。
 
-原課堂筆記提到：衝突時常優先讓 DMA 傳輸，以免裝置等待過久。這可以作為特定仲裁策略的例子，但**不是所有系統的固定規則**；實際優先權還會考慮裝置時限、公平性與平台設計，不能只由「DMA 使用頻率較低」推導平均等待時間一定較短。
+某些系統在衝突時優先讓 DMA 傳輸，以免裝置等待過久。這是特定仲裁策略的例子，**不是所有系統的固定規則**；實際優先權還會考慮裝置時限、公平性與平台設計，不能只由「DMA 使用頻率較低」推導平均等待時間一定較短。
 
 這段保留原本從 instruction cycle 觀察 DMA 競爭的學習脈絡；DMA 的平台差異與同步要求可對照前述 Linux DMA 文件。
 
@@ -180,7 +195,7 @@ DMA address 不一定等於 CPU 使用的虛擬位址或實體位址；平台可
 
 教材有時把 trap 泛指軟體中斷或例外；在特定 CPU 架構中，fault、trap、abort 有更精確的分類。System call 可以使用專用指令，不一定是同一種「軟體中斷」指令。
 
-Maskable interrupt 通常可透過控制設定暫時遮蔽；NMI 不受一般中斷遮蔽機制控制。這些分類與同步／非同步是不同面向。研究所答題時應先說明採用哪一套分類。
+Maskable interrupt 通常可透過控制設定暫時遮蔽；NMI 不受一般中斷遮蔽機制控制。這些分類與同步／非同步是不同面向，閱讀時應確認教材或 CPU 架構採用哪一套分類。
 
 #### Interrupt 的處理步驟
 
@@ -230,14 +245,14 @@ Port-mapped I/O 可以限制 I/O 指令權限；memory-mapped I/O 則限制裝�
 
 #### Memory protection
 
-傳統 contiguous allocation 模型可用 base／limit registers。若邏輯位址 `x` 合法：
+傳統 contiguous allocation 模型可用 base／limit registers。在採重定位的模型中，若邏輯位址 `x` 合法：
 
 ```text
 0 ≤ x < limit
 physical address = base + x
 ```
 
-例如 `base = 10000`、`limit = 2000`，合法邏輯位址為 0～1999，對應實體位址 10000～11999。設定保護暫存器是核心的責任，檢查由硬體執行。
+例如 `base = 10000`、`limit = 2000`，合法邏輯位址為 0～1999，對應實體位址 10000～11999。設定保護暫存器是核心的責任，檢查由硬體執行。若教材以實體位址說明保護範圍，條件則寫作 `base ≤ address < base + limit`；要先辨識輸入的是邏輯位址還是實體位址。
 
 現代系統常以 paging、MMU 和頁面權限限制讀取／寫入／執行與 user／supervisor 存取。Page fault 不一定是程式錯誤：合法頁面尚未載入，也可能由 OS 處理後繼續執行。地址轉譯機制見 [OSTEP：Address Translation](https://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf)。
 
@@ -308,7 +323,7 @@ Guest 的虛擬記憶體與 hypervisor 的記憶體管理也不是同一層。�
 
 容器可能部署在 VM 內，因此不是非此即彼。VM 適合隔離多套 OS、測試與環境整合，但仍有資源、I/O 和管理成本；隔離也不是絕對保證。VM 的角色見 [IBM Hypervisor 說明](https://www.ibm.com/think/topics/hypervisors)。
 
-## 考前自我檢查
+## 觀念自我檢查
 
 1. Polling、interrupt、DMA 各自回答什麼問題？哪些可以同時使用？
 2. I/O 完成後，程序為什麼通常先進 Ready 而非直接 Running？

@@ -2,7 +2,7 @@
 title: 把網站放上 GitHub Pages
 date: "2026-10-09"
 description: 讓每一篇筆記擁有自己的網址，用靜態網站分享你的文字與圖片。
-tags: [技術]
+tags: ["技術","Startup"]
 ---
 這個專案沒有資料庫，發布後只需要 HTML、CSS、JavaScript 與圖片。
 

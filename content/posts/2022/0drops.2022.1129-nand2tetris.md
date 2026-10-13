@@ -5,6 +5,7 @@ desc: ''
 updated: 1669693760955
 created: 1669691084582
 description: "記錄 Nand2Tetris 課程章節與學習資源，從邏輯閘、記憶體到編譯器與作業系統理解電腦架構。"
+tags: ["CS"]
 ---
 
 ## 前言
