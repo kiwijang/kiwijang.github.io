@@ -50,6 +50,43 @@
   }));
 })();
 
+/* Render JSON function-plot fences with a locally hosted library. */
+(async () => {
+  const charts = [...document.querySelectorAll('.function-chart')];
+  if (!charts.length) return;
+  try {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = new URL('vendor/function-plot.js', document.querySelector('script[src$="app.js"]').src).href;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.append(script);
+    });
+    for (const chart of charts) {
+      const target = chart.querySelector('.function-plot');
+      const source = chart.querySelector('.function-plot-source');
+      const config = JSON.parse(source.textContent);
+      let lastWidth;
+      const render = () => {
+        const width = Math.max(280, Math.floor(chart.clientWidth));
+        if (width === lastWidth) return;
+        try {
+          window.functionPlot({ ...config, target, width, height: config.height || 360, disableZoom: true });
+          lastWidth = width;
+          source.hidden = true;
+        } catch (error) {
+          source.hidden = false;
+          console.warn('Unable to render function plot', error);
+        }
+      };
+      new ResizeObserver(render).observe(chart);
+      render();
+    }
+  } catch (error) {
+    console.warn('Unable to load function-plot', error);
+  }
+})();
+
 /* Track the current article section without changing the URL while scrolling. */
 (() => {
   const links = [...document.querySelectorAll('[data-toc-link]')];

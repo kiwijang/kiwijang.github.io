@@ -233,6 +233,11 @@ nav button{display:inline-flex;align-items:center;justify-content:center;padding
 .hero-caption,.hero-coordinate{z-index:1;color:#fff;text-shadow:0 1px 4px rgb(0 0 0 / 65%)}
 
 /* Responsive diagrams with horizontal scrolling for wide charts. */
+.prose .function-chart{margin:20px 0;max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:#fff;color:#242424}
+.function-plot svg{display:block;margin:auto}
+.function-plot text{font-family:Segoe UI,Microsoft JhengHei,sans-serif;fill:#242424}
+.function-plot .graph circle{r:6;fill-opacity:1}
+.prose .function-plot-source[hidden]{display:none}
 .prose .diagram{max-width:100%;min-width:0;margin:.75rem 0;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
 .prose .diagram pre.mermaid{margin:0;background:transparent;color:var(--fg);padding:16px;white-space:pre;line-height:1.6}
 .prose .diagram pre.mermaid.rendered{display:block;width:max-content;min-width:100%;white-space:normal}

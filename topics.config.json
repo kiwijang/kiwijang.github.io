@@ -57,10 +57,24 @@
       ]
     },
     {
+      "id": "dl",
+      "title": "Deep Learning",
+      "tags": [
+        "DL"
+      ]
+    },
+    {
       "id": "cs",
       "title": "CS",
       "tags": [
         "CS"
+      ]
+    },
+    {
+      "id": "math",
+      "title": "數學",
+      "tags": [
+        "數學"
       ]
     },
     {

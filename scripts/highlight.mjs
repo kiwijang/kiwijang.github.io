@@ -7,6 +7,11 @@ const escape = text => String(text).replace(/[&<>"']/g, c => ({
 export function addCodeHighlighting(renderer) {
   renderer.code = function({ text, lang }) {
     const language = (lang || '').trim().split(/\s+/)[0].toLowerCase();
+    if (language === 'function-plot') {
+      const config = JSON.parse(text);
+      if (!Array.isArray(config.data)) throw new Error('function-plot requires a data array');
+      return `<figure class="function-chart"><div class="function-plot" role="img" aria-label="${escape(config.title || '函數圖表')}"></div><pre class="function-plot-source">${escape(text)}</pre></figure>\n`;
+    }
     if (language === 'mermaid' || (!language && /^\s*(?:flowchart|graph)\s+(?:TD|TB|BT|LR|RL)\b/.test(text))) {
       return `<div class="diagram"><pre class="mermaid">${escape(text)}</pre></div>\n`;
     }

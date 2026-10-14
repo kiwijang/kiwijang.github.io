@@ -8,6 +8,7 @@
     "buildAndPreview": "npm run build && npm run preview"
   },
   "dependencies": {
+    "function-plot": "^1.26.0",
     "highlight.js": "11.12.0",
     "marked": "15.0.12",
     "mermaid": "11.17.2",
