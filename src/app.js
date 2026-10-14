@@ -8,7 +8,7 @@
   });
   let filter = 'all';
   const search = document.querySelector('#search');
-  const yearGroups = [...document.querySelectorAll('[data-article-group]')];
+  const yearGroups = [...document.querySelectorAll('details[data-article-group]')];
   let savedYearState = null;
   const update = () => {
     const filtering = filter !== 'all' || Boolean(search?.value.trim());
@@ -24,13 +24,17 @@
     document.querySelectorAll('[data-article-group]').forEach(group => {
       const count = new Set([...group.querySelectorAll('.card:not([hidden])')].map(card => card.getAttribute('href'))).size;
       group.hidden = count === 0 && (filtering || !group.matches(".topic-group"));
-      if (filtering && count > 0) group.open = true;
-      else if (!filtering && savedYearState !== null) group.open = savedYearState.get(group);
-      const label = group.querySelector(':scope > summary [data-year-count]');
+      if (group.matches('details')) {
+        if (filtering && count > 0) group.open = true;
+        else if (!filtering && savedYearState !== null) group.open = savedYearState.get(group);
+      }
+      const label = group.querySelector(':scope > .year-heading [data-year-count]');
       if (label) label.textContent = String(count);
     });
     const topicSection = document.querySelector('.topic-section');
     if (topicSection) topicSection.hidden = filtering && !topicSection.querySelector('.topic-group:not([hidden])');
+    const yearSection = document.querySelector('.year-section');
+    if (yearSection) yearSection.hidden = filtering && !yearSection.querySelector('[data-year]:not([hidden])');
     if (!filtering) savedYearState = null;
     const empty = document.querySelector('#empty');
     if (empty) empty.hidden = visible !== 0;

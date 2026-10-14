@@ -17,11 +17,12 @@ description: "沿途筆記靜態部落格的使用說明，涵蓋 Markdown 文�
 
 ## 文章與年份
 
-文章放在 content/posts/YYYY/，例如 content/posts/2026/2026_1011.md。
-YAML front matter 包含 title、date、description、tags。date 使用引號包住 YYYY-MM-DD，年份須與資料夾一致。
-檔名支援英文小寫、數字、底線、連字號；不同年份可使用同名文章。
+文章放在 content/posts/YYYY/，例如 content/posts/2026/2026_1011.md，也可依系列放在 content/posts/ds-series/ 等子資料夾；建置會遞迴掃描 Markdown。
+YAML front matter 包含 title、date、description、tags。date 使用引號包住 YYYY-MM-DD；年份資料夾須與 date 一致，系列資料夾則由 date 決定輸出年份。
+檔名支援中文字等 Unicode 文字、數字、底線、連字號；不同來源資料夾若在同一年輸出相同檔名，建置會報錯。
 輸出為 posts/2026/2026_1011.html，首頁依日期由新到舊排序。
 相容直接放在 content/posts 的舊文章，年份取自 date。
+站內相對 Markdown 文章連結會改寫為對應 HTML 網址。系列目錄也需提供 front matter。
 
 Markdown 可包含 HTML，只應建置信任的作者內容。
 

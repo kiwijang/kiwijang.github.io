@@ -3,54 +3,79 @@
     {
       "id": "frontend",
       "title": "前端",
-      "tags": [
-        "Angular",
-        "Nx",
-        "Frontend",
-        "前端",
-        "E2E",
-        "JavaScript",
-        "TypeScript",
-        "HTML",
-        "CSS"
-      ],
+      "tags": [],
       "children": [
         {
           "id": "angular",
           "title": "Angular",
-          "tags": ["Angular"]
+          "tags": [
+            "Angular"
+          ]
+        },
+        {
+          "id": "other-frontend",
+          "title": "其他前端技術",
+          "tags": [
+            "Nx",
+            "Frontend",
+            "前端",
+            "E2E",
+            "JavaScript",
+            "TypeScript",
+            "HTML",
+            "CSS"
+          ]
         }
       ]
     },
     {
       "id": "backend",
       "title": "Backend",
-      "tags": ["Backend", "Server", "Flutter", "Android"]
+      "tags": [
+        "Backend",
+        "Server",
+        "Flutter",
+        "Android"
+      ]
     },
     {
       "id": "operating-systems",
       "title": "Operating Systems",
-      "tags": ["OS", "Operating Systems"]
+      "tags": [
+        "OS",
+        "Operating Systems"
+      ]
     },
     {
       "id": "algorithms",
-      "title": "Algorithms",
-      "tags": ["Algorithm", "Algorithms"]
+      "title": "Algorithms、Data Structure",
+      "tags": [
+        "演算法",
+        "資料結構",
+        "Algorithms",
+        "Data Structure"
+      ]
     },
     {
       "id": "cs",
       "title": "CS",
-      "tags": ["CS"]
+      "tags": [
+        "CS"
+      ]
     },
     {
       "id": "startup",
       "title": "Startup",
-      "tags": ["Startup"]
+      "tags": [
+        "Startup"
+      ]
     },
     {
       "id": "day",
       "title": "日常",
-      "tags": ["日常"]
+      "tags": [
+        "日常"
+      ]
     }
   ]
 }
