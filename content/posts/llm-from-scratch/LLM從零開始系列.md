@@ -48,6 +48,8 @@ tags: [DL, LLM, PyTorch, Transformer]
 
 理解這七章後，可接續 [GPT Fast 推論加速系列](../gpt-fast/GPTFast推論加速系列.md)，研究 prefill／decode、KV cache、編譯、量化、推測解碼和多卡。它以另一個專案分析推論效率，也會區分 GPT-2 類與 Llama 類架構，並建立正確性與效能驗證方式。
 
+接著若想理解多個請求如何一起生成，可讀 [Nano-vLLM 系列](../nano-vllm/NanoVLLM系列.md)，把本系列的 token、位置與 attention 延伸到排程、動態批次及共享 KV 管理。
+
 ## 來源與延伸
 
 章節對應依據：[官方專案目錄](https://github.com/rasbt/LLMs-from-scratch#table-of-contents)，查閱日期為 2026-10-31。原著為 Sebastian Raschka，*Build a Large Language Model (From Scratch)*，Manning，2024。
